@@ -1,7 +1,15 @@
 import java.io.*;
 import java.util.*;
 
+/**
+ * DecompressFile class provides methods for decompressing a file using Huffman coding.
+ */
 public class DecompressFile {
+    /**
+     * Main method to decompress a file using Huffman coding.
+     *
+     * @param args Command line arguments: source file path and destination file path
+     */
     public static void main(String[] args) {
         if (args.length != 2) {
             System.out.println("Usage: java DecompressFile <source file> <destination file>");
@@ -30,6 +38,12 @@ public class DecompressFile {
         }
     }
 
+    /**
+     * Reconstructs the Huffman tree using the provided Huffman codes.
+     *
+     * @param huffmanCodes The Huffman codes extracted from the compressed file
+     * @return The root node of the reconstructed Huffman tree
+     */
     private static HuffmanNode reconstructHuffmanTree(Map<Character, String> huffmanCodes) {
         HuffmanNode root = new HuffmanNode('\0', 0);
 
@@ -57,6 +71,15 @@ public class DecompressFile {
         return root;
     }
 
+    /**
+     * Decodes the binary data from the input stream using the provided Huffman tree
+     * and writes the decompressed data to the output stream.
+     *
+     * @param inputStream  The input stream of the compressed file
+     * @param outputStream The output stream to write the decompressed data
+     * @param root         The root node of the Huffman tree
+     * @throws IOException If an I/O error occurs
+     */
     private static void decodeFile(FileInputStream inputStream, FileOutputStream outputStream, HuffmanNode root) throws IOException {
         HuffmanNode current = root;
         int bits;
