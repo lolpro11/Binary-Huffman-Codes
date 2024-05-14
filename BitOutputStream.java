@@ -1,10 +1,5 @@
 import java.io.*;
 
-/**
- * A class for writing a stream of bits to a file.
- * 
- * @author Samriddhi Matharu
- */
 public class BitOutputStream {
 
     private FileOutputStream outputStream;
@@ -12,15 +7,14 @@ public class BitOutputStream {
     private int numBits;
 
     /**
-     * Constructs a BitOutputStream to write bits to the specified file.
+     * Constructs a BitOutputStream to write bits to the specified file output stream.
      * 
-     * @param file the file to write bits to
-     * @throws IOException if an I/O error occurs
+     * @param outputStream the output stream to write bits to
      */
-    public BitOutputStream(File file) throws IOException {
-        outputStream = new FileOutputStream(file);
-        currentByte = 0;
-        numBits = 0;
+    public BitOutputStream(FileOutputStream outputStream) {
+        this.outputStream = outputStream;
+        this.currentByte = 0;
+        this.numBits = 0;
     }
 
     /**
