@@ -1,55 +1,25 @@
-/**
- * Compresses a file using Binary Huffman Codes
- * @author Joshua Wong, Samriddhi Matharu, Robert Arias
- */
 import java.io.*;
 import java.util.*;
 
-/**
- * Represents a node in the Huffman tree.
- */
 class HuffmanNode implements Comparable<HuffmanNode> {
-    char data; // The character stored in this node
-    int frequency; // The frequency of the character
-    HuffmanNode left, right; // References to the left and right children
+    char data;
+    int frequency;
+    HuffmanNode left, right;
 
-    /**
-     * Constructs a HuffmanNode with the given character and frequency.
-     *
-     * @param data      The character stored in the node
-     * @param frequency The frequency of the character
-     */
     public HuffmanNode(char data, int frequency) {
         this.data = data;
         this.frequency = frequency;
         left = right = null;
     }
 
-
-    /**
-     * Compares this HuffmanNode with another based on their frequencies.
-     *
-     * @param node The other HuffmanNode to compare
-     * @return A negative integer, zero, or a positive integer if this node's frequency
-     *         is less than, equal to, or greater than the frequency of the specified node.
-     */
-    @Override
     public int compareTo(HuffmanNode node) {
         return this.frequency - node.frequency;
     }
 }
 
-/**
- * CompressFile class provides methods for compressing a file using Huffman coding.
- */
 public class CompressFile {
     static Map<Character, String> huffmanCodes = new HashMap<>();
 
-    /**
-     * Main method to compress a file using Huffman coding.
-     *
-     * @param args Command line arguments: source file path and destination file path
-     */
     public static void main(String[] args) {
         if (args.length != 2) {
             System.out.println("Usage: java CompressFile <source file> <destination file>");
@@ -103,13 +73,6 @@ public class CompressFile {
         }
     }
 
-
-    /**
-     * Builds the Huffman tree based on the given frequency map.
-     *
-     * @param frequencyMap A map containing characters and their frequencies
-     * @return The root of the Huffman tree
-     */
     private static HuffmanNode buildHuffmanTree(Map<Character, Integer> frequencyMap) {
         PriorityQueue<HuffmanNode> priorityQueue = new PriorityQueue<>();
         for (Map.Entry<Character, Integer> entry : frequencyMap.entrySet()) {
@@ -128,13 +91,6 @@ public class CompressFile {
         return priorityQueue.poll();
     }
 
-
-    /**
-     * Recursively generates Huffman codes for each character in the tree.
-     *
-     * @param root The root of the Huffman tree
-     * @param code A StringBuilder to store the generated code
-     */
     private static void generateHuffmanCodes(HuffmanNode root, StringBuilder code) {
         if (root == null) return;
         if (root.left == null && root.right == null) {
@@ -147,13 +103,6 @@ public class CompressFile {
         code.deleteCharAt(code.length() - 1);
     }
 
-    /**
-     * Encodes the source file using the generated Huffman codes and writes to the output stream.
-     *
-     * @param inputStream    The input stream of the source file
-     * @param bitOutputStream The BitOutputStream to write the encoded data
-     * @throws IOException If an I/O error occurs
-     */
     private static void encodeFile(FileInputStream inputStream, BitOutputStream bitOutputStream) throws IOException {
         int character;
         while ((character = inputStream.read()) != -1) {
