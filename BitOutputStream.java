@@ -1,3 +1,6 @@
+/**
+ * @author Samriddhi Matharu
+ */
 import java.io.*;
 
 public class BitOutputStream {
