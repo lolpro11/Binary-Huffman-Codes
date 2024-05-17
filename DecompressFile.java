@@ -1,6 +1,6 @@
 /**
  * Decompresses a file using Binary Huffman Codes
- * @author Joshua Wong, Samriddhi Matharu, Robert Arias
+ * @author Joshua Wong, Samriddhi Matharu, Robert Arias, Matthew Ngai
  */
 import java.io.*;
 import java.util.*;
@@ -15,14 +15,17 @@ public class DecompressFile {
      * @param args Command line arguments: source file path and destination file path
      */
     public static void main(String[] args) {
+        // Ensure there are exactly two arguments
         if (args.length != 2) {
             System.out.println("Usage: java DecompressFile <source file> <destination file>");
             return;
         }
 
+        // Read the source and destination file paths from command line arguments
         String sourceFile = args[0];
         String destinationFile = args[1];
 
+        // Use try-with-resources to ensure streams are closed properly
         try (FileInputStream inputStream = new FileInputStream(sourceFile);
              ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
              FileOutputStream outputStream = new FileOutputStream(destinationFile)) {
@@ -49,30 +52,33 @@ public class DecompressFile {
      * @return The root node of the reconstructed Huffman tree
      */
     private static HuffmanNode reconstructHuffmanTree(Map<Character, String> huffmanCodes) {
+        // Create an empty root node
         HuffmanNode root = new HuffmanNode('\0', 0);
 
+        // Iterate over each character and its corresponding Huffman code
         for (Map.Entry<Character, String> entry : huffmanCodes.entrySet()) {
-            char[] codeArray = entry.getValue().toCharArray();
+            char[] codeArray = entry.getValue().toCharArray(); // Convert the code to a char array
 
-            HuffmanNode current = root;
+            HuffmanNode current = root; // Start from the root node
 
+            // Traverse the Huffman tree based on the code
             for (char bit : codeArray) {
                 if (bit == '0') {
                     if (current.left == null) {
-                        current.left = new HuffmanNode('\0', 0);
+                        current.left = new HuffmanNode('\0', 0); // Create a new left child if it doesn't exist
                     }
-                    current = current.left;
+                    current = current.left; // Move to the left child
                 } else if (bit == '1') {
                     if (current.right == null) {
-                        current.right = new HuffmanNode('\0', 0);
+                        current.right = new HuffmanNode('\0', 0); // Create a new right child if it doesn't exist
                     }
-                    current = current.right;
+                    current = current.right; // Move to the right child
                 }
-            }
-            current.data = entry.getKey();
+            } 
+            current.data = entry.getKey(); // Assign the character to the leaf node
         }
 
-        return root;
+        return root; // Return the root of the reconstructed Huffman tree
     }
 
     /**
@@ -85,15 +91,18 @@ public class DecompressFile {
      * @throws IOException If an I/O error occurs
      */
     private static void decodeFile(FileInputStream inputStream, FileOutputStream outputStream, HuffmanNode root) throws IOException {
-        HuffmanNode current = root;
+        HuffmanNode current = root; // Start from the root of the Huffman tree
         int bits;
+        // Read each byte from the input stream
         while ((bits = inputStream.read()) != -1) {
+            // Process each bit in the byte
             for (int i = 7; i >= 0; i--) {
-                int bit = (bits >> i) & 1;
-                current = (bit == 0) ? current.left : current.right;
+                int bit = (bits >> i) & 1; // Extract the bit at position i
+                current = (bit == 0) ? current.left : current.right; // Traverse left or right based on the bit
                 if (current.left == null && current.right == null) {
+                    // If a leaf node is reached, write the character to the output stream
                     outputStream.write(current.data);
-                    current = root;
+                    current = root; // Reset to the root for the next character
                 }
             }
         }
